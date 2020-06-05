@@ -11,6 +11,7 @@ The goal of this project is to align RGB and Infrared videos. For this, we use a
 ## Structure
 * The [Model](Model) directory contain all the trained models. 
 * The [dataset](dataset) directory contain all the useful scripts and jupyter notebook to manipulate the dataset.
+* The [Deeplab](Deeplab) directory contain the Deeplab network for semantic segmentation. For more details please go check the official repository [Deeplab repository](https://github.com/tensorflow/models/tree/master/research/deeplab).
 * [util.py](util.py) contain all the useful functions we use in this project.
 
 ## Dataset
