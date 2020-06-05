@@ -124,7 +124,8 @@ class NetMain(nn.Module):
         
 ###############################################   
      
-
+        
+        
 ######### Affine network (2nd network)#########
 class AffineNet(nn.Module):
     def __init__(self):
@@ -132,32 +133,32 @@ class AffineNet(nn.Module):
 
         # Spatial transformer localization-network
         self.localization = nn.Sequential(
-            nn.Conv2d(1, 8, kernel_size=7),
+            nn.Conv2d(2, 32, kernel_size=7),
             nn.MaxPool2d(2, stride=2),
             nn.ReLU(True),
-            nn.Conv2d(8, 16, kernel_size=5),
+            nn.Conv2d(32, 48, kernel_size=5),
             nn.MaxPool2d(2, stride=2),
             nn.ReLU(True),
-            nn.Conv2d(16, 32, kernel_size=5),
+            nn.Conv2d(48, 64, kernel_size=5),
             nn.MaxPool2d(2, stride=2),
             nn.ReLU(True),
-            nn.Conv2d(32, 64, kernel_size=5),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(64, 80, kernel_size=3),
+            nn.Conv2d(64, 80, kernel_size=5),
             nn.MaxPool2d(2, stride=2),
             nn.ReLU(True),
             nn.Conv2d(80, 100, kernel_size=3),
+            nn.MaxPool2d(2, stride=2),
+            nn.ReLU(True),
+            nn.Conv2d(100, 120, kernel_size=3),
             nn.MaxPool2d(2, stride=2),
             nn.ReLU(True)
         )
         
         # Regressor for the 3 * 2 affine matrix
         self.fc_loc = nn.Sequential(
-            nn.Linear(200, 100),
+            nn.Linear(240, 100),
             nn.ReLU(True),
-            nn.Linear(100, 50), # add for model3
-            nn.ReLU(True),     # add for model3
+            nn.Linear(100, 50),
+            nn.ReLU(True),     
             nn.Linear(50, 3 * 2)
         )
         
@@ -168,141 +169,21 @@ class AffineNet(nn.Module):
     # Spatial transformer network forward function
     def stn(self, x):
         xs = self.localization(x)
-        xs = xs.view(-1, 200)
+        xs = xs.view(-1, 240)
         theta = self.fc_loc(xs)
         theta = theta.view(-1, 2, 3)
 
-        grid = nnf.affine_grid(theta, x.size())
-        x = nnf.grid_sample(x, grid)
-
-        return x, grid
-    
-    def forward(self, x):#src, tgt):
-        #x = torch.cat([src, tgt], dim=1)
-        # transform the input
-        x = self.stn(x)
-
-        return x #F.log_softmax(x, dim=1)
-        
-        
-######### Affine network (2nd network)#########
-class AffineNet1(nn.Module):
-    def __init__(self):
-        super(AffineNet1, self).__init__()
-
-        # Spatial transformer localization-network
-        self.localization = nn.Sequential(
-            nn.Conv2d(1, 8, kernel_size=7),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(8, 16, kernel_size=5),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(16, 32, kernel_size=5),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(32, 64, kernel_size=5),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(64, 128, kernel_size=3),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(128, 256, kernel_size=3),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True)
-        )
-        
-        # Regressor for the 3 * 2 affine matrix
-        self.fc_loc = nn.Sequential(
-            nn.Linear(512, 256),
-            nn.ReLU(True),
-            nn.Linear(256, 128),
-            nn.ReLU(True),
-            nn.Linear(128, 64),
-            nn.ReLU(True),
-            nn.Linear(64, 3 * 2)
-        )
-        
-        # Initialize the weights/bias with identity transformation
-        self.fc_loc[6].weight.data.zero_()
-        self.fc_loc[6].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
-    
-    # Spatial transformer network forward function
-    def stn(self, x):
-        xs = self.localization(x)
-        xs = xs.view(-1, 512)
-        theta = self.fc_loc(xs)
-        theta = theta.view(-1, 2, 3)
-
-        grid = nnf.affine_grid(theta, x.size())
-        x = nnf.grid_sample(x, grid)
-
-        return x, grid
-    
-    def forward(self, x):#src, tgt):
-        #x = torch.cat([src, tgt], dim=1)
-        # transform the input
-        x = self.stn(x)
-
-        return x #F.log_softmax(x, dim=1)
-        
-######### Affine network (2nd network)#########
-class AffineNet2(nn.Module):
-    def __init__(self):
-        super(AffineNet, self).__init__()
-
-        # Spatial transformer localization-network
-        self.localization = nn.Sequential(
-            nn.Conv2d(2, 8, kernel_size=7),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(8, 16, kernel_size=5),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(16, 32, kernel_size=5),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(32, 64, kernel_size=5),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(64, 80, kernel_size=3),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True),
-            nn.Conv2d(80, 100, kernel_size=3),
-            nn.MaxPool2d(2, stride=2),
-            nn.ReLU(True)
-        )
-        
-        # Regressor for the 3 * 2 affine matrix
-        self.fc_loc = nn.Sequential(
-            nn.Linear(200, 100),
-            nn.ReLU(True),
-            nn.Linear(100, 50), # add for model3
-            nn.ReLU(True),     # add for model3
-            nn.Linear(50, 3 * 2)
-        )
-        
-        # Initialize the weights/bias with identity transformation
-        self.fc_loc[4].weight.data.zero_()
-        self.fc_loc[4].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
-    
-    # Spatial transformer network forward function
-    def stn(self, x):
-        xs = self.localization(x)
-        xs = xs.view(-1, 200)
-        theta = self.fc_loc(xs)
-        theta = theta.view(-1, 2, 3)
-
-        grid = nnf.affine_grid(theta, x.size())
-        x = nnf.grid_sample(x, grid)
+        grid = nnf.affine_grid(theta, x[:, None, 0, ...].size())
+        x = nnf.grid_sample(x[:, None, 0, ...], grid)
 
         return x, grid
     
     def forward(self, src, tgt):
         x = torch.cat([src, tgt], dim=1)
+
         # transform the input
         x = self.stn(x)
 
-        return x #F.log_softmax(x, dim=1)
+        return x
         
 ###############################################
