@@ -14,7 +14,7 @@ The goal of this project is to align RGB and Infrared videos. For this, we use a
 * [util.py](util.py) contain all the useful function we use in this project.
 
 ## Dataset
-The dataset is formed of 4-tuple (RGB, IR, mask RGB and mask IR) of video frames. An example of a 4-tuple: ![4tuple](imgs/rgb_frame.jpg).  
+The dataset is formed of 4-tuple (RGB, IR, mask RGB and mask IR) of video frames. An example of a 4-tuple: ![4tuple](imgs/rgb_frame.jpg) ![4tuple](imgs/ir_frame.jpg).  
 Here you can see an example how load the dataset.
 ```python
 dataset = np.load(path+'dataset.npz')
