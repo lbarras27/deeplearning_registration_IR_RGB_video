@@ -19,3 +19,5 @@ imgs_mask_rgb = dataset['mask_rgb']
 imgs_mask_ir = dataset['mask_ir']
 ```
 You can download the dataset here: [dataset \(2.4 GB\)](https://drive.google.com/file/d/1dRi3L7eXd7uTt6tPTKGhrIMDgOc9WTHu/view?usp=sharing)
+
+You can download the original videos here: [videos](https://drive.google.com/drive/folders/1PB-abZcP9NS0ZkYt1i1529E6_rt6Xnj6?usp=sharing)
