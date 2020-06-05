@@ -3,6 +3,10 @@ The goal of this project is to align RGB and Infrared videos. For this, we use a
 
 ## Some results
 ![results](imgs/segmentation_result_m2.png)
+![results](imgs/result2.png)
+![results](imgs/result3.png)
+![results](imgs/result4.png)
+![results](imgs/result5.png)
 
 ## Dataset
 The dataset is formed of a 4-tuple (RGB, IR, mask RGB and mask IR) of video frames. Here you can see an example how load the dataset.
