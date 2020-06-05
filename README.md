@@ -8,8 +8,13 @@ The goal of this project is to align RGB and Infrared videos. For this, we use a
 ![results](imgs/results/result4.png)
 ![results](imgs/results/result5.png)
 
+## Structure
+* The Model directory contain all the trained models. 
+* The dataset directory contain all the useful scripts and jupyter notebook to manipulate the dataset.
+* util.py contain all the useful function we use in this project.
+
 ## Dataset
-The dataset is formed of a 4-tuple (RGB, IR, mask RGB and mask IR) of video frames. Here you can see an example how load the dataset.
+The dataset is formed of 4-tuple (RGB, IR, mask RGB and mask IR) of video frames. Here you can see an example how load the dataset.
 ```python
 dataset = np.load(path+'dataset.npz')
 
