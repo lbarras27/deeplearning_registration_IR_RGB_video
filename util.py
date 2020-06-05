@@ -274,14 +274,14 @@ def auto_canny(image, sigma=0.33):
     
     
 """
-    Convert all the video in the path_DATA directory in frames in the new directory path_dst.
+    Convert all the video in the path_DATA directory in frames in the new directory path_dest.
     
     @path_DATA: path to the directory DATA. (the path must contain DATA: ex: /home/DATA).
-    @path_dst: path where the frames will be save.
+    @path_dest: path where the frames will be save.
     @resize_ir: if True so we resize the ir frames in size_ir.
     @size_ir: the size of the new ir frames.
 """
-def convert_all_videos_in_frames(path_DATA, path_dst="DATA2", resize_ir = True, size_ir = (320, 240)):
+def convert_all_videos_in_frames(path_DATA, path_dest="DATA2", resize_ir = True, size_ir = (320, 240)):
     path_dst_rgb = path_dest+"/"+"RGB_frames"
     path_dst_ir = path_dest+"/"+"IR_frames"
     if not os.path.exists(path_dest):
@@ -327,7 +327,67 @@ def convert_all_videos_in_frames(path_DATA, path_dst="DATA2", resize_ir = True, 
                     if resize_ir:
                         image = cv2.resize(image, size_ir)
                 count_ir += 1
-                
+ 
+"""
+    Convert all the video in the path_DATA directory in frames in the new directory path_dest. 
+    The difference with the above function is that here, the frames has separate by video.
+    
+    @path_DATA: path to the directory DATA. (the path must contain DATA: ex: /home/DATA/).
+    @path_dest: path where the frames will be save.
+    @resize_ir: if True so we resize the ir frames in size_ir.
+    @size_ir: the size of the new ir frames.
+""" 
+def convert_each_videos_in_frames(path_DATA, path_dest="DATA2", resize_ir = True, size_ir = (320, 240)):
+    if path_DATA[len(path_DATA)- 1] != '/':
+        path_DATA = path_DATA + '/'
+    
+    l = os.listdir(path_DATA)
+    if not os.path.exists(path_dest):
+        os.makedirs(path_dest)
+        for i in range(0, len(l)):
+            os.makedirs(path_dest+"/videos"+str(i))
+            os.makedirs(path_dest+"/videos"+str(i)+"/RGB_frames")
+            os.makedirs(path_dest+"/videos"+str(i)+"/IR_frames")
+   
+    direct = []
+    for elem in l:
+        if "IR" in elem:
+            direct.append(elem)
+
+    for i, d in enumerate(direct):
+        video = os.listdir(path_DATA + d)
+        rgb_video = []
+        ir_video = []
+        for e in video:
+            if "visible" in e and ".avi" in e:
+                rgb_video.append(e)
+            elif "ir0" in e and ".avi":
+                ir_video.append(e)
+        
+        count_rgb = 0
+        for vid in rgb_video:
+            vidcap = cv2.VideoCapture(path_DATA + d + "/" + vid)
+            success,image = vidcap.read()
+            while success:
+                cv2.imwrite(path_dest+"/videos"+str(i)+"/RGB_frames/frame%d.jpg" % count_rgb, image)
+                success,image = vidcap.read()
+                count_rgb += 1
+        
+        count_ir = 0
+        for vid in ir_video:
+            vidcap = cv2.VideoCapture(path_DATA + d + "/" + vid)
+            success,image = vidcap.read()
+            if resize_ir:
+                image = cv2.resize(image, size_ir)
+            while success:
+                cv2.imwrite(path_dest+"/videos"+str(i)+"/IR_frames/frame%d.jpg" % count_ir, image)
+                success,image = vidcap.read()
+                if success:
+                    if resize_ir:
+                        image = cv2.resize(image, size_ir)
+                count_ir += 1
+        print(str(i+1)+"/"+str(len(direct))+" pair video(s) loaded")
+   
 """
 These following functions are useful for applying the output transformation of the network 
 on the originals images (colored images)
