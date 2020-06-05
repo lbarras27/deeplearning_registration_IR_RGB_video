@@ -9,8 +9,8 @@ The goal of this project is to align RGB and Infrared videos. For this, we use a
 ![results](imgs/results/result5.png)
 
 ## Structure
-* The Model directory contain all the trained models. 
-* The dataset directory contain all the useful scripts and jupyter notebook to manipulate the dataset.
+* The [Model](Model) directory contain all the trained models. 
+* The [dataset](dataset) directory contain all the useful scripts and jupyter notebook to manipulate the dataset.
 * util.py contain all the useful function we use in this project.
 
 ## Dataset
