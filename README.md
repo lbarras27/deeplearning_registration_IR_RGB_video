@@ -2,7 +2,7 @@
 The goal of this project is to align RGB and Infrared videos. For this, we use an unsupervised deep learning method. We use two different networks but there are very similar. The first network do only linear transformation on the frames and the second one can do not linear transformation (it can deform shapes). If you are intersted about them, check the [report](final_report.pdf) or directly their source code [model.py](model.py).
 
 ## Some results
-
+![results](imgs/segmentation_result_m2.png)
 
 ## Dataset
 The dataset is formed of a 4-tuple (RGB, IR, mask RGB and mask IR) of video frames. Here you can see an example how load the dataset.
