@@ -177,17 +177,11 @@ def printResult(imRGB, imIR, warp, cmap='gray'):
     plt.title("Diff RGB and Warp")
     plt.imshow(-imRGB[0, ...].numpy() + warp, cmap=cmap)
     
-"""
-    Get the images with no idImage for the Affine network.
-"""
-def getImagesById(imgsRGB, imgsIR, idImage, model):
-    warp, flow = model(imgsIR[None, idImage])
-    return imgsRGB[idImage], imgsIR[idImage], warp
 
 """
-    Get the images with no idImage for the NetMain network.
+    Get the images with no idImage.
 """
-def getImagesById2(imgsRGB, imgsIR, idImage, model):
+def getImagesById(imgsRGB, imgsIR, idImage, model):
     warp, flow = model(imgsIR[None, idImage], imgsRGB[None, idImage])
     return imgsRGB[idImage], imgsIR[idImage], warp
     
@@ -371,17 +365,8 @@ def applyFlowToColoredImages_netMain(imgs, flow, beg, end, model):
     
     return x
 
-def getAllFlows(imgs, model):
-    flows = []
-    for i in range(0, imgs.shape[0]):
-        _, flow = model(imgs[None, i, ...].cpu())
-        flow = flow[0].detach().numpy()
-        flows.append(flow)
-    flows = torch.tensor(flows)
     
-    return flows
-    
-def getAllFlows_netMain(imgs_ir, imgs_rgb, model):
+def getAllFlows(imgs_ir, imgs_rgb, model):
     flows = []
     for i in range(0, imgs_ir.shape[0]):
         _, flow = model(imgs_ir[None, i, ...].cpu(), imgs_rgb[None, i, ...].cpu())
@@ -413,3 +398,59 @@ def printFinal(warp, img_rgb, img_ir, warp_rgb, rgb_ir):
     plt.subplot(155)
     plt.title("Warp and RGB")
     plt.imshow(cv2.cvtColor(warp_rgb, cv2.COLOR_BGR2RGB), cmap='gray')
+
+"""
+    Print the loss function graph.
+    
+    @epoch: list containing loss for each epoch
+    @title: plot tittle 
+"""
+def printGraphLoss(epoch, title):
+    x = list(range(0, len(epoch)))
+    fig = plt.figure()
+    ax = plt.axes()
+    ax.plot(x, epoch);
+    plt.title(title)
+    ax = ax.set(xlabel='epoch', ylabel='loss')
+    
+    
+"""
+    Split the dataset in train and test set.
+    
+    @imgs_rgb: the rgb images to split.
+    @imgs_ir: the ir images to split.
+    @imgs_mask_rgb: the rgb masks to split.
+    @imgs_mask_ir: the ir masks to split.
+    @split: the indice where we want to split.
+    @shuffle: if shuffle is true, the images are shuffles.
+    
+    @return: the rgb train, ir train set and the rgb, ir test set.
+"""
+def splitDataset(imgs_rgb, imgs_ir, imgs_mask_rgb, imgs_mask_ir, split, shuffle=False):
+    if shuffle:
+        indice_train = np.random.choice(imgs_rgb.shape[0], split, replace=False)
+        mask_test = np.ones(imgs_rgb.shape[0], dtype=bool)
+        mask_test[indice_train] = False
+        mask_train = ~mask_test
+        
+        imgs_rgb_train = imgs_rgb[mask_train]
+        imgs_ir_train = imgs_ir[mask_train]
+        imgs_rgb_test = imgs_rgb[mask_test]
+        imgs_ir_test = imgs_ir[mask_test]
+        
+        imgs_mask_rgb_train = imgs_mask_rgb[mask_train]
+        imgs_mask_ir_train = imgs_mask_ir[mask_train]
+        imgs_mask_rgb_test = imgs_mask_rgb[mask_test]
+        imgs_mask_ir_test = imgs_mask_ir[mask_test]
+    else:
+        imgs_rgb_train = imgs_rgb[0:split]
+        imgs_ir_train = imgs_ir[0:split]
+        imgs_rgb_test = imgs_rgb[split:imgs_rgb.shape[0]]
+        imgs_ir_test = imgs_ir[split:imgs_ir.shape[0]]
+        
+        imgs_mask_rgb_train = imgs_mask_rgb[0:split]
+        imgs_mask_ir_train = imgs_mask_ir[0:split]
+        imgs_mask_rgb_test = imgs_mask_rgb[split:imgs_mask_rgb.shape[0]]
+        imgs_mask_ir_test = imgs_mask_ir[split:imgs_mask_ir.shape[0]]
+    
+    return imgs_rgb_train, imgs_ir_train, imgs_rgb_test, imgs_ir_test, imgs_mask_rgb_train, imgs_mask_ir_train, imgs_mask_rgb_test, imgs_mask_ir_test
