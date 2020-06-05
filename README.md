@@ -17,9 +17,9 @@ The goal of this project is to align RGB and Infrared videos. For this, we use a
 The dataset is formed of 4-tuple (RGB, IR, mask RGB and mask IR) of video frames. An example of a 4-tuple:
 
 <img src="imgs/rgb_frame.jpg" alt="4tuple" width="200px"/>
-<img src="imgs/ir_frame.jpg" alt="4tuple" width="200px"/> 
+<img src="imgs/ir_frame.jpg" alt="4tuple" width="200px"/>
 <img src="imgs/mask_rgb_frame.jpg" alt="4tuple" width="200px"/>
-<img src="imgs/mask_ir_frame.jpg" alt="4tuple" width="200px"/>  
+<img src="imgs/mask_ir_frame.jpg" alt="4tuple" width="200px"/>
 
 Here you can see an example how load the dataset.
 ```python
